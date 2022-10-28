@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "level.hpp"
+#include "game.hpp"
 
 #include <iostream>
 
@@ -14,9 +15,10 @@ int main (int argc,char* argv[])
 {
     clog<<"Welcome to lluna!"<<endl;
 
-    Level level(argv[1]);
+    Game::game* Game::create();
+    game->loop();
 
-    clog<<"\nlevel:"<<argv[1]<<endl;
-    clog<<level.width()<<"x"<<level.height()<<endl;
+    Game::destroy();
+
     return 0;
 }
