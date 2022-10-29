@@ -9,6 +9,7 @@
 
 namespace lluna
 {
+    class Atlas;
     class Game
     {
         public:
@@ -17,6 +18,7 @@ namespace lluna
         static Game* get();
         static void destroy();
 
+        void init();
         void loop();
 
         SDL_Renderer* renderer() const
@@ -35,6 +37,8 @@ namespace lluna
 
         SDL_Renderer* _renderer;
         SDL_Window* _window;
+
+        Atlas* _tiles[2];
 
         static Game* _instance;
     };

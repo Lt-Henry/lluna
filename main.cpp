@@ -15,7 +15,8 @@ int main (int argc,char* argv[])
 {
     clog<<"Welcome to lluna!"<<endl;
 
-    Game::game* Game::create();
+    Game* game = Game::create();
+    game->init();
     game->loop();
 
     Game::destroy();

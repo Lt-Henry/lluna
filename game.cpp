@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "game.hpp"
-#include "SDL_keycode.h"
+#include "atlas.hpp"
 
 #include <SDL2/SDL_image.h>
+
+#include <iostream>
 
 using namespace lluna;
 
@@ -33,12 +35,21 @@ void Game::destroy()
 
 Game::Game()
 {
+
+}
+
+Game::~Game()
+{
+}
+
+void Game::init()
+{
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         cerr<<"Failed to init SDL"<<endl;
     }
 
     // yeah, logic is inverted for IMG_Init
-    if (IMG_Init() == 0) {
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
         cerr<<"Failed to init SDL_Image"<<endl;
     }
 
@@ -49,10 +60,8 @@ Game::Game()
 
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
 
-}
-
-Game::~Game()
-{
+    _tiles[0] = new Atlas("L0.png");
+    _tiles[1] = new Atlas("L1.png");
 }
 
 void Game::loop()
@@ -83,6 +92,8 @@ void Game::loop()
         //updating
 
         //rendering
-
+        SDL_SetRenderDrawColor(_renderer, 0x00, 0x98, 0xdc, 0xff);
+        SDL_RenderClear(_renderer);
+        SDL_RenderPresent(_renderer);
     }
 }
