@@ -16,6 +16,7 @@ namespace lluna
 
         public:
 
+        Level():_width(0),_height(0){};
         Level(const char* filename);
 
         int get(int x,int y);

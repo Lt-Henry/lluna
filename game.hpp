@@ -2,13 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "SDL_render.h"
+#include "level.hpp"
+
 #include <SDL2/SDL.h>
 
 #include <string>
 
 namespace lluna
 {
+
     class Atlas;
     class Game
     {
@@ -38,6 +40,7 @@ namespace lluna
         SDL_Renderer* _renderer;
         SDL_Window* _window;
 
+        Level _level[2];
         Atlas* _tiles[2];
 
         static Game* _instance;

@@ -5,7 +5,7 @@
 #include "game.hpp"
 #include "atlas.hpp"
 
-#include <SDL2/SDL_image.h>
+#include <SDL2/SDL.h>
 
 #include <iostream>
 
@@ -62,6 +62,10 @@ void Game::init()
 
     _tiles[0] = new Atlas("L0.png");
     _tiles[1] = new Atlas("L1.png");
+
+    _level[0]= Level("level0_L0.csv");
+    _level[1]= Level("level0_L1.csv");
+
 }
 
 void Game::loop()
@@ -94,6 +98,17 @@ void Game::loop()
         //rendering
         SDL_SetRenderDrawColor(_renderer, 0x00, 0x98, 0xdc, 0xff);
         SDL_RenderClear(_renderer);
+
+        for (int i=0;i<10;i++) {
+            for (int j=0;j<10;j++) {
+                int l0 = _level[0].get(i,j);
+
+                if (l0>0) {
+
+                }
+            }
+        }
+
         SDL_RenderPresent(_renderer);
     }
 }
