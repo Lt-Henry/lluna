@@ -30,11 +30,14 @@ Level::Level(const char* filename)
 
             if (c==',') {
                 int v = std::stoi(tmp);
+                tmp="";
+
                 columns.push_back(v);
             }
             else {
                 if (c=='\n') {
                     int v = std::stoi(tmp);
+                    tmp="";
                     columns.push_back(v);
                     rows.push_back(columns);
                     columns.clear();
@@ -73,11 +76,40 @@ Level::Level(const char* filename)
     }
 
     file.close();
+
+    int fx = _width;
+    int fy = _height;
+    int lx = 0;
+    int ly = 0;
+
+    for (int i=0;i<_width;i++) {
+        for (int j=0;j<_height;j++) {
+            int l = data[i+j*_width];
+            if (l>-1) {
+                clog<<"l "<<l<<" "<<i<<" "<<j<<endl;
+                if (i<fx) {
+                    fx=i;
+                }
+                if (j<fy) {
+                    fy=j;
+                }
+                if (i>lx) {
+                    lx=i;
+                }
+                if (j>ly) {
+                    ly=j;
+                }
+            }
+        }
+    }
+
+    clog<<"level size:"<<_width<<"x"<<_height<<endl;
+    clog<<"level box:"<<fx<<"x"<<fy<<" -- "<<lx<<"x"<<ly<<endl;
 }
 
 int Level::get(int x,int y)
 {
-    if (_width>0 and _height>0) {
+    if (_width>0 and _height>0 and x>-1 and y>-1 and x<_width and y<_height) {
         return data[x+y*_width];
     }
 
