@@ -70,6 +70,8 @@ void Game::init()
     camx = 0;
     camy = 0;
 
+    _cam_pos = {0,0};
+
 }
 
 void Game::loop()
@@ -97,25 +99,29 @@ void Game::loop()
                         break;
 
                         case SDLK_UP:
-                            camy--;
-                            clog<<"camera "<<camy<<","<<camx<<endl;
+
+
                         break;
 
                         case SDLK_DOWN:
-                            camy++;
-                            clog<<"camera "<<camy<<","<<camx<<endl;
+
                         break;
 
                         case SDLK_RIGHT:
-                            camx++;
-                            clog<<"camera "<<camy<<","<<camx<<endl;
+
                         break;
 
                         case SDLK_LEFT:
-                            camx--;
-                            clog<<"camera "<<camy<<","<<camx<<endl;
+
                         break;
 
+                        case SDLK_h:
+                            move_camera(0,0);
+                        break;
+
+                        case SDLK_p:
+                            move_camera(900,900);
+                        break;
 
                     }
                 break;
@@ -123,14 +129,21 @@ void Game::loop()
         }
 
         //updating
+        int dx =  _cam_target.x - _cam_pos.x;
+        int dy =  _cam_target.y - _cam_pos.y;
+
+        _cam_pos.x+=dx;
+        _cam_pos.y+=dy;
 
         //rendering
         SDL_SetRenderDrawColor(_renderer, 0x00, 0x98, 0xdc, 0xff);
         SDL_RenderClear(_renderer);
 
-        for (int i=0;i<10;i++) {
-            for (int j=0;j<10;j++) {
-                int l0 = _level[0].get(camx+i,camy+j);
+        for (int i=0;i<40;i++) {
+            for (int j=0;j<22;j++) {
+                int tx = _cam_pos.x/32;
+                int ty = _cam_pos.y/32;
+                int l0 = _level[0].get(tx+i,ty+j);
                 SDL_Rect dest;
                 dest.x=i*32;
                 dest.y=j*32;
@@ -148,4 +161,10 @@ void Game::loop()
 
         SDL_RenderPresent(_renderer);
     }
+}
+
+void Game::move_camera(int x,int y)
+{
+    _cam_target.x = x;
+    _cam_target.y = y;
 }

@@ -33,6 +33,8 @@ namespace lluna
             return _window;
         }
 
+        void move_camera(int x,int y);
+
         private:
         Game();
         ~Game();
@@ -44,6 +46,9 @@ namespace lluna
         Atlas* _tiles[2];
 
         int camx,camy;
+
+        SDL_Point _cam_pos;
+        SDL_Point _cam_target;
 
         static Game* _instance;
     };
