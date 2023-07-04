@@ -5,5 +5,5 @@ sdl_image=dependency('SDL2_image')
 
 executable('lluna', ['main.cpp','game.cpp','level.cpp','atlas.cpp'],
     dependencies:[sdl,sdl_image],
-    cpp_args:'-std=c++20'
+    cpp_args:'-std=c++17'
     )

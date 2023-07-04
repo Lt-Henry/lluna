@@ -61,11 +61,12 @@ void Game::init()
 
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    _tiles[0] = new Atlas("L0.png");
-    _tiles[1] = new Atlas("L1.png");
+    _tiles[0] = new Atlas("tileset.png");
+    _tiles[0]->set_sprite_size(64,64);
+    //_tiles[1] = new Atlas("L1.png");
 
-    _level[0]= Level("level0_L0.csv");
-    _level[1]= Level("level0_L1.csv");
+    _level[0]= new Level("test.csv");
+    //_level[1]= new Level("level0_L1.csv");
 
     camx = 0;
     camy = 0;
@@ -99,20 +100,19 @@ void Game::loop()
                         break;
 
                         case SDLK_UP:
-
-
+                            _cam_target.y = _cam_pos.y - 100;
                         break;
 
                         case SDLK_DOWN:
-
+                            _cam_target.y = _cam_pos.y + 100;
                         break;
 
                         case SDLK_RIGHT:
-
+                            _cam_target.x = _cam_pos.x + 100;
                         break;
 
                         case SDLK_LEFT:
-
+                            _cam_target.x = _cam_pos.x - 100;
                         break;
 
                         case SDLK_h:
@@ -141,18 +141,18 @@ void Game::loop()
 
         for (int i=0;i<40;i++) {
             for (int j=0;j<22;j++) {
-                int tx = _cam_pos.x/32;
-                int ty = _cam_pos.y/32;
-                int l0 = _level[0].get(tx+i,ty+j);
+                int tx = _cam_pos.x/64;
+                int ty = _cam_pos.y/64;
+                int l0 = _level[0]->get(tx+i,ty+j);
                 SDL_Rect dest;
-                dest.x=i*32;
-                dest.y=j*32;
-                dest.w=32;
-                dest.h=32;
+                dest.x=i*64;
+                dest.y=j*64;
+                dest.w=64;
+                dest.h=64;
 
-                if (l0>0) {
-                    int ax = l0 % 4;
-                    int ay = l0 / 4;
+                if (l0>-1) {
+                    int ax = l0 % 16;
+                    int ay = l0 / 16;
 
                     _tiles[0]->draw(ax,ay,dest);
                 }

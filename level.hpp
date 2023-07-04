@@ -10,14 +10,15 @@ namespace lluna
     {
         protected:
 
-        std::shared_ptr<int[]> data;
         int _width;
         int _height;
+        int* _data;
 
         public:
 
-        Level():_width(0),_height(0){};
+        Level():_width(0),_height(0),_data(0){};
         Level(const char* filename);
+        virtual ~Level();
 
         int get(int x,int y);
 

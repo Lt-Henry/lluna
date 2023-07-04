@@ -41,6 +41,8 @@ Level::Level(const char* filename)
                     columns.push_back(v);
                     rows.push_back(columns);
                     columns.clear();
+                    clog<<"row "<<rows.size()<<endl;
+                    clog<<rows.back().size()<<endl;
                 }
                 else {
                     if ( (c>='0' and c<='9') or c=='-') {
@@ -55,6 +57,7 @@ Level::Level(const char* filename)
 
         set<int> sizes;
         for (size_t i=0;i<rows.size();i++) {
+            //clog<<"row "<<i<<" size "<<rows[i].size()<<endl;
             sizes.insert(rows[i].size());
         }
 
@@ -64,12 +67,17 @@ Level::Level(const char* filename)
 
         _height = rows.size();
         _width = *sizes.begin();
+        clog<<"size "<<_width<<"x"<<_height<<endl;
 
-        data = std::make_shared<int[]>(_width*_height);
+        _data = new int[_width*_height];
 
         for (size_t j=0;j<rows.size();j++) {
             for (size_t i=0;i<rows[j].size();i++) {
-                data[i+j*_width] = rows[j][i];
+                //clog<<"accesing row "<<j<<" "<<i<<endl;
+                //clog<<rows[j][i]<<endl;
+                _data[i+j*_width] = rows[j][i];
+                //clog<<data[i+j*_width]<<endl;
+
             }
         }
 
@@ -84,7 +92,7 @@ Level::Level(const char* filename)
 
     for (int i=0;i<_width;i++) {
         for (int j=0;j<_height;j++) {
-            int l = data[i+j*_width];
+            int l = _data[i+j*_width];
             if (l>-1) {
                 clog<<"l "<<l<<" "<<i<<" "<<j<<endl;
                 if (i<fx) {
@@ -107,10 +115,15 @@ Level::Level(const char* filename)
     clog<<"level box:"<<fx<<"x"<<fy<<" -- "<<lx<<"x"<<ly<<endl;
 }
 
+Level::~Level()
+{
+    delete [] _data;
+}
+
 int Level::get(int x,int y)
 {
-    if (_width>0 and _height>0 and x>-1 and y>-1 and x<_width and y<_height) {
-        return data[x+y*_width];
+    if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width+1) and y<(_height+1)) {
+        return _data[x+y*_width];
     }
 
     return -1;

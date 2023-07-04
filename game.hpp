@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 
 #include <string>
+#include <memory>
 
 namespace lluna
 {
@@ -42,7 +43,7 @@ namespace lluna
         SDL_Renderer* _renderer;
         SDL_Window* _window;
 
-        Level _level[2];
+        Level* _level[2];
         Atlas* _tiles[2];
 
         int camx,camy;
