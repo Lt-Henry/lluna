@@ -16,7 +16,8 @@ namespace lluna
 
         public:
 
-        Level():_width(0),_height(0),_data(0){};
+        Level():_width(0),_height(0),_data(nullptr){};
+        Level(int width,int height,int seed=0);
         Level(const char* filename);
         virtual ~Level();
 

@@ -15,7 +15,7 @@ using namespace lluna;
 
 using namespace std;
 
-Atlas::Atlas(const char* filename) : _tw(32),_th(32)
+Atlas::Atlas(const char* filename, int sprite_w, int sprite_h) : _tw(sprite_w),_th(sprite_h)
 {
     _renderer = Game::get()->renderer();
     SDL_Surface* data = IMG_Load(filename);
@@ -27,11 +27,21 @@ Atlas::Atlas(const char* filename) : _tw(32),_th(32)
     _texture = SDL_CreateTextureFromSurface(_renderer,data);
 
     SDL_FreeSurface(data);
+
+    compute_size();
 }
 
 Atlas::~Atlas()
 {
     SDL_DestroyTexture(_texture);
+}
+
+void Atlas::compute_size()
+{
+    SDL_QueryTexture(_texture, nullptr, nullptr, &_width, &_height);
+
+    _rows = _height / _th;
+    _columns = _width / _tw;
 }
 
 void Atlas::draw(int i,int j,SDL_Rect dest)

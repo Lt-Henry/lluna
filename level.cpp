@@ -41,8 +41,6 @@ Level::Level(const char* filename)
                     columns.push_back(v);
                     rows.push_back(columns);
                     columns.clear();
-                    clog<<"row "<<rows.size()<<endl;
-                    clog<<rows.back().size()<<endl;
                 }
                 else {
                     if ( (c>='0' and c<='9') or c=='-') {
@@ -94,7 +92,7 @@ Level::Level(const char* filename)
         for (int j=0;j<_height;j++) {
             int l = _data[i+j*_width];
             if (l>-1) {
-                clog<<"l "<<l<<" "<<i<<" "<<j<<endl;
+                //clog<<"l "<<l<<" "<<i<<" "<<j<<endl;
                 if (i<fx) {
                     fx=i;
                 }
@@ -113,6 +111,17 @@ Level::Level(const char* filename)
 
     clog<<"level size:"<<_width<<"x"<<_height<<endl;
     clog<<"level box:"<<fx<<"x"<<fy<<" -- "<<lx<<"x"<<ly<<endl;
+}
+
+Level::Level(int width,int height,int seed) : _width(width),_height(height)
+{
+    _data = new int[_width*_height];
+
+    for (int x=0;x<_width;x++) {
+        for (int y=0;y<_height;y++) {
+            //TODO
+        }
+    }
 }
 
 Level::~Level()

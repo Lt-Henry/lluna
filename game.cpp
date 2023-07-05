@@ -61,8 +61,7 @@ void Game::init()
 
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    _tiles[0] = new Atlas("tileset.png");
-    _tiles[0]->set_sprite_size(64,64);
+    _tiles[0] = new Atlas("tileset.png",64,64);
     //_tiles[1] = new Atlas("L1.png");
 
     _level[0]= new Level("test.csv");
@@ -100,19 +99,19 @@ void Game::loop()
                         break;
 
                         case SDLK_UP:
-                            _cam_target.y = _cam_pos.y - 100;
+                            _cam_target.y = _cam_pos.y - 64;
                         break;
 
                         case SDLK_DOWN:
-                            _cam_target.y = _cam_pos.y + 100;
+                            _cam_target.y = _cam_pos.y + 64;
                         break;
 
                         case SDLK_RIGHT:
-                            _cam_target.x = _cam_pos.x + 100;
+                            _cam_target.x = _cam_pos.x + 64;
                         break;
 
                         case SDLK_LEFT:
-                            _cam_target.x = _cam_pos.x - 100;
+                            _cam_target.x = _cam_pos.x - 64;
                         break;
 
                         case SDLK_h:
@@ -120,7 +119,7 @@ void Game::loop()
                         break;
 
                         case SDLK_p:
-                            move_camera(900,900);
+                            move_camera(640,640);
                         break;
 
                     }
