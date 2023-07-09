@@ -6,6 +6,39 @@
 
 namespace lluna
 {
+    enum Tiles
+    {
+        Dirt = 0,
+        Grass,
+
+        Rock = 16,
+        RockIron,
+        RockCoal,
+
+        Log = 32,
+        Leafs,
+        Leafs2,
+
+        Sand = 48,
+        Cactus,
+
+        Water = 64,
+        Water2,
+
+        Lava = 80,
+        lava2,
+
+        Bedrock = 96,
+
+        Wall = 112,
+
+        Pumpking = 128,
+        PumpkingHalloween,
+        Watermelon,
+
+        TNT = 144
+    };
+
     class Level
     {
         protected:

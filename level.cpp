@@ -8,6 +8,7 @@
 #include <fstream>
 #include <vector>
 #include <set>
+#include <random>
 
 using namespace lluna;
 
@@ -117,9 +118,59 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
 {
     _data = new int[_width*_height];
 
+    for (size_t n=0;n<(_width*_height);n++) {
+        _data[n] = -1;
+    }
+
+    int h = 64;
+    int dy = 0;
+    default_random_engine re;
+    uniform_int_distribution<int> id(0,100);
+
     for (int x=0;x<_width;x++) {
+        int rnd = id(re);
+
+        if (rnd>50) {
+            dy++;
+        }
+        else {
+            dy--;
+        }
+
+        if (dy>4) {
+            h++;
+        }
+        if (dy<0) {
+            h--;
+        }
+
         for (int y=0;y<_height;y++) {
-            //TODO
+            if (y>=h) {
+                size_t center = x+y*_width;
+                size_t top = x+(y-1)*_width;
+                int tile = Rock;
+
+                if (y==h) {
+                    tile = Grass;
+
+                    if (id(re) > 90) {
+                        _data[top] = Watermelon;
+                    }
+                }
+
+                if (y>h and y<(h+4)) {
+                    tile = Dirt;
+                }
+
+                if (tile == Rock) {
+                    if (id(re)>98) {
+                        tile = RockCoal;
+                    }
+
+                }
+
+                _data[center] = tile;
+            }
         }
     }
 }

@@ -64,7 +64,8 @@ void Game::init()
     _tiles[0] = new Atlas("tileset.png",64,64);
     //_tiles[1] = new Atlas("L1.png");
 
-    _level[0]= new Level("test.csv");
+    //_level[0]= new Level("test.csv");
+    _level[0] = new Level(256,256);
     //_level[1]= new Level("level0_L1.csv");
 
     camx = 0;
