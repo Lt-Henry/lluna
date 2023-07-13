@@ -40,11 +40,14 @@ namespace lluna
         Game();
         ~Game();
 
+        void print(std::string text,int x,int y);
+
         SDL_Renderer* _renderer;
         SDL_Window* _window;
 
         Level* _level[2];
         Atlas* _tiles[2];
+        Atlas* _font;
 
         int camx,camy;
 

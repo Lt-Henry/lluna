@@ -9,6 +9,7 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <sstream>
 
 using namespace lluna;
 
@@ -43,6 +44,19 @@ Game::~Game()
 {
 }
 
+void Game::print(string text,int x,int y)
+{
+    SDL_Rect pos = {x,y,32,32};
+
+    for (size_t n=0;n<text.size();n++) {
+        uint32_t code = text[n];
+        int i = code % 16;
+        int j = code / 16;
+        _font->draw(i,j,pos);
+        pos.x+=32;
+    }
+}
+
 void Game::init()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -62,6 +76,8 @@ void Game::init()
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     _tiles[0] = new Atlas("tileset.png",64,64);
+    _font = new Atlas("font.png",32,32);
+
     //_tiles[1] = new Atlas("L1.png");
 
     //_level[0]= new Level("test.csv");
@@ -158,6 +174,11 @@ void Game::loop()
                 }
             }
         }
+
+        stringstream ss;
+
+        ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y;
+        print(ss.str(),0,0);
 
         SDL_RenderPresent(_renderer);
     }
