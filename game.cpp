@@ -73,10 +73,13 @@ void Game::init()
         SDL_WINDOWPOS_CENTERED,
         1280,720, SDL_WINDOW_SHOWN);
 
+    SDL_ShowCursor(SDL_DISABLE);
+
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     _tiles[0] = new Atlas("tileset.png",64,64);
     _font = new Atlas("font.png",32,32);
+    _ui = new Atlas("ui.png",64,64);
 
     //_tiles[1] = new Atlas("L1.png");
 
@@ -99,6 +102,9 @@ void Game::loop()
 
         //event handling
         SDL_Event event;
+
+        int mouse_x,mouse_y;
+        uint32_t mouse_buttons;
 
         while(SDL_PollEvent(&event)) {
 
@@ -124,7 +130,7 @@ void Game::loop()
                         break;
 
                         case SDLK_RIGHT:
-                            _cam_target.x = _cam_pos.x + 64;
+                            _cam_target.x = _cam_target.x + 64;
                         break;
 
                         case SDLK_LEFT:
@@ -141,8 +147,19 @@ void Game::loop()
 
                     }
                 break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    if (event.button.button == SDL_BUTTON_LEFT) {
+                        int tx = (_cam_pos.x/64) + (event.button.x/64);
+                        int ty = (_cam_pos.y/64) + (event.button.y/64);
+
+                        _level[0]->put(tx,ty,Tiles::TNT);
+                    }
+                break;
             }
         }
+
+        mouse_buttons = SDL_GetMouseState(&mouse_x,&mouse_y);
 
         //updating
         int dx =  _cam_target.x - _cam_pos.x;
@@ -177,8 +194,10 @@ void Game::loop()
 
         stringstream ss;
 
-        ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y;
+        ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y<<" MOUSE:"<<mouse_x<<","<<mouse_y;
         print(ss.str(),0,0);
+
+        _ui->draw(0,0,{mouse_x,mouse_y,64,64});
 
         SDL_RenderPresent(_renderer);
     }

@@ -48,6 +48,7 @@ namespace lluna
         Level* _level[2];
         Atlas* _tiles[2];
         Atlas* _font;
+        Atlas* _ui;
 
         int camx,camy;
 

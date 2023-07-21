@@ -188,3 +188,10 @@ int Level::get(int x,int y)
 
     return -1;
 }
+
+void Level::put(int x,int y,int value)
+{
+    if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width+1) and y<(_height+1)) {
+        _data[x+y*_width] = value;
+    }
+}

@@ -8,6 +8,7 @@ namespace lluna
 {
     enum Tiles
     {
+        Empty = -1,
         Dirt = 0,
         Grass,
 
@@ -55,6 +56,7 @@ namespace lluna
         virtual ~Level();
 
         int get(int x,int y);
+        void put(int x,int y,int value);
 
         const int width() const { return _width; }
         const int height() const { return _height; }
