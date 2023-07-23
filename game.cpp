@@ -153,8 +153,17 @@ void Game::loop()
                         int tx = (_cam_pos.x/64) + (event.button.x/64);
                         int ty = (_cam_pos.y/64) + (event.button.y/64);
 
-                        _level[0]->put(tx,ty,Tiles::TNT);
+                        _level[0]->put(tx,ty,Tiles::Empty);
                     }
+
+                    if (event.button.button == SDL_BUTTON_RIGHT) {
+                        int tx = (_cam_pos.x/64) + (event.button.x/64);
+                        int ty = (_cam_pos.y/64) + (event.button.y/64);
+
+                        _level[0]->put(tx,ty,Tiles::Dirt);
+                    }
+
+
                 break;
             }
         }
