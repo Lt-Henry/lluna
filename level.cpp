@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "level.hpp"
+#include "noise.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -113,7 +114,7 @@ Level::Level(const char* filename)
     clog<<"level size:"<<_width<<"x"<<_height<<endl;
     clog<<"level box:"<<fx<<"x"<<fy<<" -- "<<lx<<"x"<<ly<<endl;
 }
-
+/*
 Level::Level(int width,int height,int seed) : _width(width),_height(height)
 {
     _data = new int[_width*_height];
@@ -170,6 +171,34 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
                 }
 
                 _data[center] = tile;
+            }
+        }
+    }
+}
+*/
+
+Level::Level(int width,int height,int seed) : _width(width),_height(height)
+{
+
+    _data = new int[_width*_height];
+
+    for (size_t n=0;n<(_width*_height);n++) {
+        _data[n] = -1;
+    }
+
+    for (int x=0;x<_width;x++) {
+        for (int y=0;y<_height;y++) {
+
+            size_t center = x+y*_width;
+
+            float i = x/(float)_width;
+            float j = y/(float)_height;
+
+            float value = lluna::perlin(x,y,0.1f,2);
+            clog<<i<<" "<<j<<" "<<value<<endl;
+
+            if (value>0.5) {
+                _data[center] = Rock;
             }
         }
     }

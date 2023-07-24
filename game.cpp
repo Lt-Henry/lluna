@@ -5,6 +5,7 @@
 #include "game.hpp"
 #include "atlas.hpp"
 
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -206,7 +207,7 @@ void Game::loop()
         ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y<<" MOUSE:"<<mouse_x<<","<<mouse_y;
         print(ss.str(),0,0);
 
-        _ui->draw(0,0,{mouse_x,mouse_y,64,64});
+        _ui->draw(0,1,{mouse_x,mouse_y,64,64});
 
         SDL_RenderPresent(_renderer);
     }
