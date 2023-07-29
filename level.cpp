@@ -180,6 +180,9 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
 Level::Level(int width,int height,int seed) : _width(width),_height(height)
 {
 
+    default_random_engine re;
+    uniform_int_distribution<int> id(0,100);
+
     _data = new int[_width*_height];
 
     for (size_t n=0;n<(_width*_height);n++) {
@@ -187,7 +190,9 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
     }
 
     for (int x=0;x<_width;x++) {
-        for (int y=0;y<_height;y++) {
+        int first = id(re)/20;
+
+        for (int y=0;y<(_height-1);y++) {
 
             size_t center = x+y*_width;
 
@@ -198,9 +203,25 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
             clog<<i<<" "<<j<<" "<<value<<endl;
 
             if (value>0.5) {
-                _data[center] = Rock;
+                if (first < 5) {
+                    if (first == 0) {
+                        _data[center] = Grass;
+                    }
+                    else {
+                        _data[center] = Dirt;
+                    }
+                    first++;
+                }
+                else {
+                    _data[center] = Rock;
+                }
             }
         }
+    }
+
+    for (int x=0;x<_width;x++) {
+        size_t center = x+(_height-1)*_width;
+        _data[center] = Bedrock;
     }
 }
 
