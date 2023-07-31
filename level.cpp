@@ -190,7 +190,8 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
     }
 
     for (int x=0;x<_width;x++) {
-        int first = id(re)/20;
+        int first_layer = id(re)/20;
+        int first = 0;
 
         for (int y=0;y<(_height-1);y++) {
 
@@ -203,7 +204,7 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
             clog<<i<<" "<<j<<" "<<value<<endl;
 
             if (value>0.5) {
-                if (first < 5) {
+                if (first < first_layer) {
                     if (first == 0) {
                         _data[center] = Grass;
                     }

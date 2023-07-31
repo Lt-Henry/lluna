@@ -166,6 +166,35 @@ void Game::loop()
 
 
                 break;
+
+                case SDL_JOYDEVICEADDED:
+                    SDL_JoystickOpen(event.jdevice.which);
+                break;
+
+                case SDL_JOYAXISMOTION:
+                    clog<<(int)event.jaxis.value<<endl;
+                    if (event.jaxis.axis==0) {
+                        if (event.jaxis.value>1024) {
+                            _cam_target.x = _cam_target.x + 64;
+                        }
+                        if (event.jaxis.value<-1024) {
+                            _cam_target.x = _cam_target.x - 64;
+                        }
+                    }
+                    if (event.jaxis.axis==1) {
+                        if (event.jaxis.value>1024) {
+                            _cam_target.y = _cam_target.y + 64;
+                        }
+                        if (event.jaxis.value<-1024) {
+                            _cam_target.y = _cam_target.y - 64;
+                        }
+                    }
+
+                break;
+
+                case SDL_JOYBUTTONDOWN:
+                    clog<<(int)event.jbutton.button<<endl;
+                break;
             }
         }
 
