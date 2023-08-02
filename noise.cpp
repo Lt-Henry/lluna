@@ -52,6 +52,11 @@ namespace lluna
         return smooth_inter(low, high, y_frac);
     }
 
+    void set_seed(int value)
+    {
+        SEED = value;
+    }
+
     float perlin(float x,float y,float frequency,float depth)
     {
         float xa = x * frequency;

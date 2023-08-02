@@ -183,6 +183,9 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
     default_random_engine re;
     uniform_int_distribution<int> id(0,100);
 
+    int garbage;
+    lluna::set_seed(garbage);
+
     _data = new int[_width*_height];
 
     for (size_t n=0;n<(_width*_height);n++) {
@@ -190,31 +193,80 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
     }
 
     for (int x=0;x<_width;x++) {
-        int first_layer = id(re)/20;
+        int first_layer = 1 + id(re)/20;
         int first = 0;
 
-        for (int y=0;y<(_height-1);y++) {
+        float fb = lluna::perlin(x,1,0.06f,2.0f);
+        int biome = fb*10;
+        //clog<<"biome "<<biome<<" "<<fb<<endl;
 
-            size_t center = x+y*_width;
+        int l1 = Grass;
+        int l2 = Dirt;
 
-            float i = x/(float)_width;
-            float j = y/(float)_height;
+        switch (biome) {
+            case 0:
+            case 1:
+            case 2:
+                l1 = Snow;
+                l2 = Dirt;
+                break;
+            case 3:
+                l1 = Water;
+                l2 = Water;
+                break;
+            case 4:
+                l1 = Sand;
+                l2 = Sand;
+                break;
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+
+            default:
+                break;
+        }
+
+        for (int y=6;y<(_height-1);y++) {
 
             float value = lluna::perlin(x,y,0.1f,2);
-            clog<<i<<" "<<j<<" "<<value<<endl;
+            //clog<<i<<" "<<j<<" "<<value<<endl;
 
             if (value>0.5) {
                 if (first < first_layer) {
                     if (first == 0) {
-                        _data[center] = Grass;
+                        put(x,y,l1);
+
+                        if (biome == 2 and id(re)>80) {
+                            put(x,y-1,Pumpking);
+                        }
+
+                        if (biome == 4 and id(re)>80) {
+                            put(x,y-1,Cactus);
+                            put(x,y-2,Cactus);
+                            put(x,y-3,Cactus);
+                        }
+
+                        if (biome == 5 and id(re)>80) {
+                            put(x,y-1,Log);
+                            put(x,y-2,Log);
+                            put(x,y-3,Log);
+
+                            for (int tx=-1;tx<2;tx++) {
+                                for (int ty=-1;ty<2;ty++) {
+                                    put(x+tx,y-4+ty,Leafs);
+                                }
+                            }
+                        }
                     }
                     else {
-                        _data[center] = Dirt;
+                        put(x,y,l2);
                     }
                     first++;
                 }
                 else {
-                    _data[center] = Rock;
+                    put(x,y,Rock);
                 }
             }
         }

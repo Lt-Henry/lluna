@@ -5,4 +5,5 @@
 namespace lluna
 {
     float perlin(float x,float y,float frequency,float depth);
+    void set_seed(int value);
 }

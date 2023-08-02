@@ -11,6 +11,7 @@ namespace lluna
         Empty = -1,
         Dirt = 0,
         Grass,
+        Snow,
 
         Rock = 16,
         RockIron,
