@@ -12,6 +12,12 @@
 namespace lluna
 {
 
+    struct Inventory
+    {
+        int what;
+        int count;
+    };
+
     class Atlas;
     class Game
     {
@@ -54,6 +60,9 @@ namespace lluna
 
         SDL_Point _cam_pos;
         SDL_Point _cam_target;
+
+        Inventory _items[9];
+        int _item_selected;
 
         static Game* _instance;
     };

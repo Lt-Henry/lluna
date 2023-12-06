@@ -93,6 +93,11 @@ void Game::init()
 
     _cam_pos = {0,0};
 
+    _item_selected = 0;
+
+    _items[0].what = lluna::Rock;
+    _items[1].what = lluna::Dirt;
+
 }
 
 void Game::loop()
@@ -231,12 +236,28 @@ void Game::loop()
             }
         }
 
+        for (int n=0;n<9;n++) {
+            int cx = 256 + (64*n);
+            int cy = 580;
+            int ax = _items[n].what % 16;
+            int ay = _items[n].what / 16;
+
+            _tiles[0]->draw(ax,ay,{cx,cy,64,64});
+
+            if (n == _item_selected) {
+                _ui->draw(1,3,{cx,cy,64,64});
+            }
+            else {
+                _ui->draw(0,3,{cx,cy,64,64});
+            }
+        }
+
         stringstream ss;
 
         ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y<<" MOUSE:"<<mouse_x<<","<<mouse_y;
         print(ss.str(),0,0);
 
-        _ui->draw(0,1,{mouse_x,mouse_y,64,64});
+        _ui->draw(0,2,{mouse_x,mouse_y,64,64});
 
         SDL_RenderPresent(_renderer);
     }
