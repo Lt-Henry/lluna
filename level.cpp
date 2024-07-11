@@ -285,7 +285,7 @@ Level::~Level()
 
 int Level::get(int x,int y)
 {
-    if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width+1) and y<(_height+1)) {
+    if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width) and y<(_height)) {
         return _data[x+y*_width];
     }
 
@@ -294,7 +294,7 @@ int Level::get(int x,int y)
 
 void Level::put(int x,int y,int value)
 {
-    if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width+1) and y<(_height+1)) {
+    if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width) and y<(_height)) {
         _data[x+y*_width] = value;
     }
 }

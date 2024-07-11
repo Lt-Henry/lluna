@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <chrono>
 
 using namespace lluna;
 
@@ -103,6 +104,8 @@ void Game::init()
 void Game::loop()
 {
     bool quit_request = false;
+    
+    auto last_clock = std::chrono::steady_clock::now();
 
     while (!quit_request) {
 
@@ -169,7 +172,6 @@ void Game::loop()
                         _level[0]->put(tx,ty,Tiles::Dirt);
                     }
 
-
                 break;
 
                 case SDL_JOYDEVICEADDED:
@@ -202,6 +204,17 @@ void Game::loop()
                 break;
             }
         }
+        
+        auto current_clock = std::chrono::steady_clock::now();
+
+        int ms_delta = std::chrono::duration_cast<std::chrono::milliseconds>(current_clock - last_clock).count();
+        
+        bool tick = false;
+        
+        if (ms_delta > 256) {
+            last_clock = current_clock;
+            tick = true;
+        }
 
         mouse_buttons = SDL_GetMouseState(&mouse_x,&mouse_y);
 
@@ -217,7 +230,7 @@ void Game::loop()
         SDL_RenderClear(_renderer);
 
         for (int i=0;i<40;i++) {
-            for (int j=0;j<22;j++) {
+            for (int j=21;j>=0;j--) {
                 int tx = _cam_pos.x/64;
                 int ty = _cam_pos.y/64;
                 int l0 = _level[0]->get(tx+i,ty+j);
@@ -232,6 +245,17 @@ void Game::loop()
                     int ay = l0 / 16;
 
                     _tiles[0]->draw(ax,ay,dest);
+                    
+                    if (tick) {
+                        if (l0==Tiles::Sand) {
+                            int lbottom = _level[0]->get(tx+i,ty+j+1);
+                            
+                            if (lbottom == Tiles::Empty) {
+                                _level[0]->put(tx+i,ty+j+1,l0);
+                                _level[0]->put(tx+i,ty+j,Tiles::Empty);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -257,7 +281,7 @@ void Game::loop()
         ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y<<" MOUSE:"<<mouse_x<<","<<mouse_y;
         print(ss.str(),0,0);
 
-        _ui->draw(0,2,{mouse_x,mouse_y,64,64});
+        _ui->draw(0,0,{mouse_x-8,mouse_y-8,64,64});
 
         SDL_RenderPresent(_renderer);
     }
