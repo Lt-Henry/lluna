@@ -78,6 +78,7 @@ void Game::init()
     SDL_ShowCursor(SDL_DISABLE);
 
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_SetRenderDrawBlendMode(_renderer,SDL_BLENDMODE_BLEND);
 
     _tiles[0] = new Atlas("tileset.png",64,64);
     _font = new Atlas("font.png",32,32);
@@ -245,6 +246,21 @@ void Game::loop()
                     int ay = l0 / 16;
 
                     _tiles[0]->draw(ax,ay,dest);
+                    uint8_t light = 0;
+                    int tyl = ty + j - 1;
+                    
+                    while(tyl>0 and light<240) {
+                        int p = _level[0]->get(tx+i,tyl);
+                        
+                        if (p>-1) {
+                            light = light + 16;
+                        } 
+                        tyl--;
+                    }
+                    
+                    
+                    SDL_SetRenderDrawColor(_renderer, 0, 0, 0, light);
+                    SDL_RenderFillRect(_renderer, &dest);
                     
                     if (tick) {
                         if (l0==Tiles::Sand) {
