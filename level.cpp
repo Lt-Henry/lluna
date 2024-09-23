@@ -183,8 +183,7 @@ Level::Level(int width,int height,int seed) : _width(width),_height(height)
     default_random_engine re;
     uniform_int_distribution<int> id(0,100);
 
-    int garbage;
-    lluna::set_seed(garbage);
+    lluna::set_seed(seed);
 
     _data = new int[_width*_height];
 

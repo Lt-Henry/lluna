@@ -27,7 +27,7 @@ namespace lluna
         static Game* get();
         static void destroy();
 
-        void init();
+        void init(int argc,char* argv[]);
         void loop();
 
         SDL_Renderer* renderer() const

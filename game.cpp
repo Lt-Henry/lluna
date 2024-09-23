@@ -59,8 +59,35 @@ void Game::print(string text,int x,int y)
     }
 }
 
-void Game::init()
+void Game::init(int argc,char* argv[])
 {
+    int garbage;
+    int seed = garbage;
+    bool value = false;
+    string cmd;
+
+    for (int n=1;n<argc;n++) {
+
+        if (value) {
+            if (cmd == "--seed") {
+                string data = argv[n];
+
+                for (char c:data) {
+                    seed = seed + c;
+                }
+            }
+
+            value = false;
+            continue;
+        }
+        cmd = argv[n];
+
+        if (cmd == "--seed") {
+            value = true;
+        }
+
+    }
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         cerr<<"Failed to init SDL"<<endl;
     }
@@ -73,7 +100,7 @@ void Game::init()
     _window = SDL_CreateWindow("Lluna",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        1280,720, SDL_WINDOW_SHOWN);
+        0,0, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     SDL_ShowCursor(SDL_DISABLE);
 
@@ -87,7 +114,7 @@ void Game::init()
     //_tiles[1] = new Atlas("L1.png");
 
     //_level[0]= new Level("test.csv");
-    _level[0] = new Level(256,256);
+    _level[0] = new Level(256,256,seed);
     //_level[1]= new Level("level0_L1.csv");
 
     camx = 0;
@@ -99,7 +126,11 @@ void Game::init()
 
     _items[0].what = lluna::Rock;
     _items[1].what = lluna::Dirt;
-
+    _items[2].what = lluna::Grass;
+    _items[3].what = lluna::Log;
+    _items[4].what = lluna::Wall;
+    _items[5].what = lluna::Watermelon;
+    _items[6].what = lluna::Leafs;
 }
 
 void Game::loop()
@@ -155,6 +186,11 @@ void Game::loop()
                             move_camera(640,640);
                         break;
 
+                        case SDLK_SPACE:
+                            _item_selected = _item_selected + 1;
+                            _item_selected = _item_selected % 9;
+                        break;
+
                     }
                 break;
 
@@ -170,7 +206,7 @@ void Game::loop()
                         int tx = (_cam_pos.x/64) + (event.button.x/64);
                         int ty = (_cam_pos.y/64) + (event.button.y/64);
 
-                        _level[0]->put(tx,ty,Tiles::Dirt);
+                        _level[0]->put(tx,ty,_items[_item_selected].what);
                     }
 
                 break;
@@ -259,8 +295,8 @@ void Game::loop()
                     }
                     
                     
-                    SDL_SetRenderDrawColor(_renderer, 0, 0, 0, light);
-                    SDL_RenderFillRect(_renderer, &dest);
+                    //SDL_SetRenderDrawColor(_renderer, 0, 0, 0, light);
+                    //SDL_RenderFillRect(_renderer, &dest);
                     
                     if (tick) {
                         if (l0==Tiles::Sand) {

@@ -9,7 +9,7 @@ namespace lluna
     enum Tiles
     {
         Empty = -1,
-        Dirt = 0,
+        Dirt = 1,
         Grass,
         Snow,
 
