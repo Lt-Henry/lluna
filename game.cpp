@@ -5,13 +5,18 @@
 #include "game.hpp"
 #include "atlas.hpp"
 
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdlrenderer2.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <chrono>
+#include <filesystem>
 
 using namespace lluna;
 
@@ -71,7 +76,7 @@ void Game::init(int argc,char* argv[])
         if (value) {
             if (cmd == "--seed") {
                 string data = argv[n];
-
+                seed = 0;
                 for (char c:data) {
                     seed = seed + c;
                 }
@@ -87,6 +92,8 @@ void Game::init(int argc,char* argv[])
         }
 
     }
+
+    _seed = seed;
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         cerr<<"Failed to init SDL"<<endl;
@@ -107,6 +114,30 @@ void Game::init(int argc,char* argv[])
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetRenderDrawBlendMode(_renderer,SDL_BLENDMODE_BLEND);
 
+    // setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable keyboard controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+    // theme
+    ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL2_InitForSDLRenderer(_window, _renderer);
+    ImGui_ImplSDLRenderer2_Init(_renderer);
+
+    // Start the Dear ImGui frame
+    ImGui_ImplSDLRenderer2_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
+
     _tiles[0] = new Atlas("tileset.png",64,64);
     _font = new Atlas("font.png",32,32);
     _ui = new Atlas("ui.png",64,64);
@@ -114,7 +145,17 @@ void Game::init(int argc,char* argv[])
     //_tiles[1] = new Atlas("L1.png");
 
     //_level[0]= new Level("test.csv");
-    _level[0] = new Level(256,256,seed);
+    stringstream ss;
+    ss<<std::hex<<_seed<<".csv";
+
+    if (std::filesystem::exists(ss.str())) {
+        clog<<"There is a saved file"<<endl;
+        _level[0] = new Level(ss.str().c_str());
+    }
+    else {
+        _level[0] = new Level(256,256,seed);
+    }
+
     //_level[1]= new Level("level0_L1.csv");
 
     camx = 0;
@@ -131,11 +172,14 @@ void Game::init(int argc,char* argv[])
     _items[4].what = lluna::Wall;
     _items[5].what = lluna::Watermelon;
     _items[6].what = lluna::Leafs;
+    _items[7].what = lluna::Water;
+    _items[8].what = lluna::Sand;
 }
 
 void Game::loop()
 {
     bool quit_request = false;
+    bool show_items = false;
     
     auto last_clock = std::chrono::steady_clock::now();
 
@@ -147,7 +191,72 @@ void Game::loop()
         int mouse_x,mouse_y;
         uint32_t mouse_buttons;
 
+        //ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+
+        ImGui::NewFrame();
+
+        // properties window
+        ImGui::Begin("Toolbox");
+        stringstream ss;
+        ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y<<" MOUSE:"<<mouse_x<<","<<mouse_y;
+        ImGui::Text(ss.str().c_str());
+
+        if(ImGui::Button("Home")) {
+            move_camera(0,0);
+        }
+        ImGui::SameLine();
+
+        if(ImGui::Button("Save")) {
+            stringstream ss;
+            ss<<std::hex<<_seed<<".csv";
+            _level[0]->save(ss.str().c_str());
+        }
+        ImGui::SameLine();
+
+        if(ImGui::Button("Exit")) {
+            quit_request = true;
+        }
+        //ImGui::SameLine();
+
+        int what = _items[_item_selected].what;
+        int tx = what % 16;
+        int ty = what / 16;
+        float kt = 0.0625f;
+        float u = tx * kt;
+        float v = ty * kt;
+        if (ImGui::ImageButton("Foo",_tiles[0]->texture(),{32,32},{u,v},{u+kt,v+kt})) {
+            show_items = true;
+        }
+
+        ImGui::End();
+
+        if (show_items) {
+            ImGui::Begin("Items");
+            for (int j=0;j<16;j++) {
+                for (int i=0;i<16;i++) {
+                    u = i * kt;
+                    v = j * kt;
+                    stringstream ss;
+                    ss<<"item-"<<i<<"."<<j;
+                    if (ImGui::ImageButton(ss.str().c_str(),_tiles[0]->texture(),{32,32},{u,v},{u+kt,v+kt})) {
+                        _items[_item_selected].what = i+j*16;
+                        show_items = false;
+                    }
+                    ImGui::SameLine();
+                }
+                ImGui::NewLine();
+
+            }
+            ImGui::End();
+        }
+
         while(SDL_PollEvent(&event)) {
+            ImGui_ImplSDL2_ProcessEvent(&event);
+            auto& io = ImGui::GetIO();
+
+            if (io.WantCaptureMouse or io.WantCaptureKeyboard) {
+                continue;
+            }
 
             switch (event.type) {
                 case SDL_QUIT:
@@ -299,7 +408,7 @@ void Game::loop()
                     //SDL_RenderFillRect(_renderer, &dest);
                     
                     if (tick) {
-                        if (l0==Tiles::Sand) {
+                        if (l0==Tiles::Sand or l0 == Tiles::Water) {
                             int lbottom = _level[0]->get(tx+i,ty+j+1);
                             
                             if (lbottom == Tiles::Empty) {
@@ -312,6 +421,7 @@ void Game::loop()
             }
         }
 
+        /*
         for (int n=0;n<9;n++) {
             int cx = 256 + (64*n);
             int cy = 580;
@@ -327,11 +437,12 @@ void Game::loop()
                 _ui->draw(0,3,{cx,cy,64,64});
             }
         }
+        */
+        //print(ss.str(),0,0);
 
-        stringstream ss;
-
-        ss<<"POSITION:"<<_cam_pos.x<<","<<_cam_pos.y<<" MOUSE:"<<mouse_x<<","<<mouse_y;
-        print(ss.str(),0,0);
+        // send ImGui context to SDL Renderer context
+        ImGui::Render();
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),_renderer);
 
         _ui->draw(0,0,{mouse_x-8,mouse_y-8,64,64});
 

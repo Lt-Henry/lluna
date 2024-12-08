@@ -282,6 +282,23 @@ Level::~Level()
     delete [] _data;
 }
 
+void Level::save(const char* filename)
+{
+    fstream file;
+
+    file.open(filename, std::fstream::out);
+
+    for (int j=0;j<_height;j++) {
+        for (int i=0;i<_width-1;i++) {
+            file<<_data[i+j*_width]<<",";
+        }
+        file<<_data[_width-1+j*_width]<<"\n";
+
+    }
+
+    file.close();
+}
+
 int Level::get(int x,int y)
 {
     if (_width>0 and _height>0 and x>-1 and y>-1 and x<(_width) and y<(_height)) {

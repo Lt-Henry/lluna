@@ -51,6 +51,7 @@ namespace lluna
         SDL_Renderer* _renderer;
         SDL_Window* _window;
 
+        int _seed;
         Level* _level[2];
         Atlas* _tiles[2];
         Atlas* _font;

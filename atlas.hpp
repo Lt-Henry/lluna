@@ -22,6 +22,8 @@ namespace lluna
 
         void draw(int i,int j,SDL_Rect dest);
 
+        SDL_Texture* get_copy(int i,int j);
+
         int width() const
         {
             return _width;
@@ -50,6 +52,11 @@ namespace lluna
         int sprite_height() const
         {
             return _th;
+        }
+
+        SDL_Texture* texture() const
+        {
+            return _texture;
         }
 
         private:

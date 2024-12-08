@@ -55,3 +55,8 @@ void Atlas::draw(int i,int j,SDL_Rect dest)
 
     SDL_RenderCopy(_renderer,_texture,&source,&dest);
 }
+
+SDL_Texture* Atlas::get_copy(int i,int j)
+{
+    return nullptr;
+}

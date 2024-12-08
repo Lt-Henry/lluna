@@ -56,6 +56,8 @@ namespace lluna
         Level(const char* filename);
         virtual ~Level();
 
+        void save(const char* filename);
+
         int get(int x,int y);
         void put(int x,int y,int value);
 
